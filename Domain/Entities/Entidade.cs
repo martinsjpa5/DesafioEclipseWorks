@@ -5,7 +5,7 @@ namespace Domain.Entities
 {
     public abstract class Entidade
     {
-        public int Id { get; private set; }
+        public int Id { get; set; }
         public DateTime CriadoEm { get; private set; } = DateTime.Now;
         public DateTime? AtualizadoEm { get; protected set; }
         public abstract CommonResponse EhValida();

@@ -20,7 +20,7 @@ namespace Domain.Entities
         {
             CommonResponse response = CommonResponse.SucessoBuilder();
 
-            if (Tarefas.Count == 20)
+            if (Tarefas.Count >= 20)
                 response.AdicionarErro("O Projeto Excedeu o Limite máximo que é 20");
             else
                 Tarefas.Add(tarefa);
