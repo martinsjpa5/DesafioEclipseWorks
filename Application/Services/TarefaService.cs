@@ -5,11 +5,6 @@ using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using ExternalServices.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils.Models;
 using Utils.Response;
 
@@ -26,6 +21,20 @@ namespace Application.Services
             _commonRepository = commonRepository;
             _tarefaDomainService = tarefaDomainService;
             _authExternalService = authExternalService;
+        }
+
+        public async Task<CommonResponse> DeletarAsync(int tarefaId)
+        {
+            Tarefa? entidade = await _commonRepository.ObterPorIdAsync<Tarefa>(tarefaId);
+
+            if (entidade == null)
+                return CommonResponse.ErroBuilder(CommonMsgError.ENTIDADE_NAO_ENCONTRADA);
+
+            _commonRepository.DeletarEntidade(entidade);
+
+            await _commonRepository.SalvarAlteracoesAsync();
+
+            return CommonResponse.SucessoBuilder();
         }
 
         public async Task<CommonResponse> EditarAsync(TarefaEditarRequest request)

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Application.ViewModels.Requests;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,13 @@ namespace WebApi.Controllers
         {
             var result = await _tarefaService.SalvarAsync(request);
 
+            return CommonResponse(result);
+        }
+
+        [HttpDelete("{tarefaId}")]
+        public async Task<IActionResult> DeletarAsync(int tarefaId)
+        {
+            var result = await _tarefaService.DeletarAsync(tarefaId);
             return CommonResponse(result);
         }
 

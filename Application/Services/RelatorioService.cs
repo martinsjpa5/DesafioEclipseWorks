@@ -32,7 +32,7 @@ namespace Application.Services
             DateTime now = DateTime.Now;
             DateTime midnightTonight = now.Date.AddDays(1);
 
-            TimeSpan timeUntilMidnight = midnightTonight - now; 
+            TimeSpan timeUntilMidnight = midnightTonight - now;
 
             await _commonCachingRepository.SetAsync(result, timeUntilMidnight);
 
@@ -41,8 +41,11 @@ namespace Application.Services
 
         public async Task<CommonGenericResponse<RelatorioDesempenho>> ObterRelatorioDesempenhoAsync(RelatorioRequest request)
         {
-            if (_authExternalService.ObterGerentes().FirstOrDefault(gerente => gerente.Id == request.GerenteId) == null)
+            if (_authExternalService.ObterGerentes().Any(gerente => gerente.Id == request.GerenteId) is false)
                 return CommonGenericResponse<RelatorioDesempenho>.ErroBuilder("O GerenteId informado não é de um gerente portanto essa funcionalidade não poderá ser utilizada");
+
+            if (_authExternalService.ObterAnalistas().Any(analista => analista.Id == request.AnalistaId) is false)
+                return CommonGenericResponse<RelatorioDesempenho>.ErroBuilder("O AnalistaId informado não é de nenhum analista, tente novamente!");
 
             RelatorioDesempenho relatorio = new() { Usuario = request.AnalistaId };
 
@@ -58,8 +61,11 @@ namespace Application.Services
 
         public async Task<CommonGenericResponse<string>> PedirParaGerarRelatorioAsync(RelatorioRequest request)
         {
-            if (_authExternalService.ObterGerentes().FirstOrDefault(gerente => gerente.Id == request.GerenteId) == null)
+            if (_authExternalService.ObterGerentes().Any(gerente => gerente.Id == request.GerenteId) is false)
                 return CommonGenericResponse<string>.ErroBuilder("O GerenteId informado não é de um gerente portanto essa funcionalidade não poderá ser utilizada");
+
+            if (_authExternalService.ObterAnalistas().Any(analista => analista.Id == request.AnalistaId) is false)
+                return CommonGenericResponse<string>.ErroBuilder("O AnalistaId informado não é de nenhum analista, tente novamente!");
 
             await _relatorioQueue.PublishMessageAsync(new Domain.Contracts.Queues.RelatorioMessage { Usuario = request.AnalistaId });
 

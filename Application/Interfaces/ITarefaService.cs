@@ -7,5 +7,6 @@ namespace Application.Interfaces
     {
         public Task<CommonResponse> EditarAsync(TarefaEditarRequest request);
         public Task<CommonResponse> SalvarAsync(TarefaSalvarRequest request);
+        public Task<CommonResponse> DeletarAsync(int tarefaId);
     }
 }
