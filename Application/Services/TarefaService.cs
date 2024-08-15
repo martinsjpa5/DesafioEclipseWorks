@@ -39,7 +39,7 @@ namespace Application.Services
 
         public async Task<CommonResponse> EditarAsync(TarefaEditarRequest request)
         {
-            Tarefa? entidade = await  _commonRepository.ObterPorIdAsync<Tarefa>(request.Id);
+            Tarefa? entidade = await  _commonRepository.ObterPorIdAsync<Tarefa>(request.Id, tarefa => tarefa.Include(x => x.Comentarios));
 
             if (entidade == null)
                 return CommonResponse.ErroBuilder(CommonMsgError.ENTIDADE_NAO_ENCONTRADA);

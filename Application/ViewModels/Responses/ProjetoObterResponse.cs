@@ -24,6 +24,7 @@ namespace Application.ViewModels.Responses
                     Titulo = tarefa.Titulo,
                     DataVencimento = tarefa.DataVencimento,
                     Status = tarefa.Status,
+                    Comentarios = tarefa.Comentarios.Select(comentario => comentario.Descricao).ToList(),
                     HistoricosAlteracoes = tarefa.HistoricosAlteracoes.Select(historico =>
                     new HistoricoAlteracaoTarefaObterResponse
                     {

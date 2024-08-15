@@ -5,6 +5,7 @@ namespace Application.ViewModels.Responses
     public class TarefaObterResponse : EntidadeCommonResponse
     {
         public string Titulo { get; set; }
+        public ICollection<string> Comentarios { get; set; }
         public string Descricao { get; set; }
         public DateTime DataVencimento { get; set; }
         public EPrioridadeTarefa Prioridade { get; set; }

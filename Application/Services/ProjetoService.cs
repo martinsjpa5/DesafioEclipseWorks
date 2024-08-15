@@ -55,7 +55,7 @@ namespace Application.Services
 
         public async Task<CommonGenericResponse<List<ProjetoObterResponse>>> ObterTodosAsync()
         {
-            ICollection<Projeto> projetos = await _commonRepository.ObterTodosAsync<Projeto>(query => query.Include(x => x.Tarefas), query => query.Include(x => x.Tarefas).ThenInclude(x => x.HistoricosAlteracoes));
+            ICollection<Projeto> projetos = await _commonRepository.ObterTodosAsync<Projeto>(query => query.Include(x => x.Tarefas),query => query.Include(x => x.Tarefas).ThenInclude(x => x.Comentarios), query => query.Include(x => x.Tarefas).ThenInclude(x => x.HistoricosAlteracoes));
 
             List<ProjetoObterResponse> response = ProjetoObterResponse.Mapear(projetos);
 

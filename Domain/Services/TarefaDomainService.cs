@@ -22,11 +22,14 @@ namespace Domain.Services
 
         public async Task<CommonResponse> EditarAsync(Tarefa tarefa, CommonUser user)
         {
+
+            var alteracoes = new { Tarefa = new { tarefa.Prioridade, tarefa.Id, tarefa.ProjetoId, tarefa.Descricao, tarefa.Status, tarefa.Titulo, tarefa.AtualizadoEm, Comentarios = tarefa.Comentarios.Select(x => x.Descricao).ToList() } };
+
             HistoricoAlteracaoTarefa historicoTarefa = new()
             {
                 TarefaId = tarefa.Id,
                 CriadoPor = user.Id,
-                Alteracoes = JsonConvert.SerializeObject(tarefa),
+                Alteracoes = JsonConvert.SerializeObject(alteracoes),
             };
 
             await _commonRepository.AdicionarEntidadeAsync(historicoTarefa);
