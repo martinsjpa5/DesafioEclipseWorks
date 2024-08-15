@@ -6,6 +6,7 @@ namespace Utils.Response
         public bool Sucesso { get; private set; }
         public List<string> Erros { get; private set; } = [];
 
+
         private CommonResponse()
         {
         }
@@ -44,7 +45,7 @@ namespace Utils.Response
         }
         public static CommonResponse SucessoBuilder()
         {
-            return new CommonResponse { Sucesso = true };
+            return new CommonResponse { Sucesso = true, };
         }
     }
 }

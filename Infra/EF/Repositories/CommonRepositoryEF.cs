@@ -1,12 +1,13 @@
 ﻿using Domain.Entities;
-using Domain.Repositories;
+using Domain.Interfaces.Repositories;
 using Infra.EF.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace Infra.EF.Repositories
 {
-    public abstract class CommonRepositoryEF : ICommonRepositoryEF
+    public class CommonRepositoryEF : ICommonRepositoryEF
     {
         protected readonly DatabaseContext _dataContext;
         private bool disposed = false;
@@ -24,6 +25,12 @@ namespace Infra.EF.Repositories
         public async Task<bool> AdicionarEntidadesAsync<T>(List<T> entidades) where T : Entidade
         {
             await _dataContext.AddRangeAsync(entidades);
+            return true;
+        }
+
+        public bool DeletarEntidade<T>(T entidade) where T : Entidade
+        {
+            _dataContext.Remove(entidade);
             return true;
         }
 
@@ -74,33 +81,26 @@ namespace Infra.EF.Repositories
             return await _dataContext.SaveChangesAsync();
         }
 
-
-        public async Task<ICollection<T>> ObterTodosAsync<T>(ICollection<string> propriedadesRelacionamentos) where T : Entidade
+        public async Task<ICollection<T>> ObterTodosAsync<T>(params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes) where T : Entidade
         {
-            if (propriedadesRelacionamentos == null) throw new Exception($"propriedadesRelacionamentos não pode ser Null");
-
             var query = _dataContext.Set<T>().AsQueryable();
 
-            foreach (var prop in propriedadesRelacionamentos)
+            foreach (var include in includes)
             {
-                if (typeof(T).GetProperty(prop) == null) throw new Exception($"Propriedade {prop} não existente na Entidade {typeof(T).Name}");
-                query = query.Include(prop);
+                query = include(query);
             }
 
             var result = await query.ToListAsync();
             return result;
         }
 
-        public async Task<T?> ObterPorIdAsync<T>(int id, ICollection<string> propriedadesRelacionamentos) where T : Entidade
+        public async Task<T?> ObterPorIdAsync<T>(int id, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes) where T : Entidade
         {
-            if (propriedadesRelacionamentos == null) throw new Exception($"propriedadesRelacionamentos não pode ser Null");
-
             var query = _dataContext.Set<T>().AsQueryable();
 
-            foreach (var prop in propriedadesRelacionamentos)
+            foreach (var include in includes)
             {
-                if (typeof(T).GetProperty(prop) == null) throw new Exception($"Propriedade {prop} não existente na Entidade {typeof(T).Name}");
-                query = query.Include(prop);
+                query = include(query);
             }
 
             var result = await query.FirstOrDefaultAsync(x => x.Id == id);

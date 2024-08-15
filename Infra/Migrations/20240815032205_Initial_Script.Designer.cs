@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infra.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240731221303_001_Adicionando_Entidades")]
-    partial class _001_Adicionando_Entidades
+    [Migration("20240815032205_Initial_Script")]
+    partial class Initial_Script
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,34 @@ namespace Infra.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.Comentario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("AtualizadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TarefaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TarefaId");
+
+                    b.ToTable("Comentarios", (string)null);
+                });
 
             modelBuilder.Entity("Domain.Entities.HistoricoAlteracaoTarefa", b =>
                 {
@@ -43,9 +71,8 @@ namespace Infra.Migrations
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CriadoPor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("CriadoPor")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("TarefaId")
                         .HasColumnType("int");
@@ -54,7 +81,7 @@ namespace Infra.Migrations
 
                     b.HasIndex("TarefaId");
 
-                    b.ToTable("HistoricoAlteracaoTarefa");
+                    b.ToTable("HistoricoAlteracaoTarefa", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Projeto", b =>
@@ -94,7 +121,10 @@ namespace Infra.Migrations
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Detalhes")
+                    b.Property<DateTime>("DataVencimento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -107,11 +137,26 @@ namespace Infra.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProjetoId");
 
                     b.ToTable("Tarefas");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Comentario", b =>
+                {
+                    b.HasOne("Domain.Entities.Tarefa", "Tarefa")
+                        .WithMany("Comentarios")
+                        .HasForeignKey("TarefaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tarefa");
                 });
 
             modelBuilder.Entity("Domain.Entities.HistoricoAlteracaoTarefa", b =>
@@ -143,6 +188,8 @@ namespace Infra.Migrations
 
             modelBuilder.Entity("Domain.Entities.Tarefa", b =>
                 {
+                    b.Navigation("Comentarios");
+
                     b.Navigation("HistoricosAlteracoes");
                 });
 #pragma warning restore 612, 618

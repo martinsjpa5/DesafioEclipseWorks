@@ -1,4 +1,5 @@
-﻿using Infra.EF.Contexts;
+﻿using Domain.Models;
+using Infra.EF.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Utils.Response;
@@ -16,17 +17,18 @@ namespace WebApi.Configurations
             {
                 string defaultConnection = configuration.GetConnectionString("DefaultConnection")!;
                 options.UseSqlServer(defaultConnection);
+
             });
 
-            //var redisConnectionSection = configuration.GetSection("RedisConnection");
-            //services.Configure<RedisConnection>(redisConnectionSection);
+            var redisConnectionSection = configuration.GetSection("RedisConnection");
+            services.Configure<RedisConnectionSettings>(redisConnectionSection);
 
-            //var redisConnection = redisConnectionSection.Get<RedisConnection>();
-            //services.AddStackExchangeRedisCache(o =>
-            //{
-            //    o.InstanceName = redisConnection.InstanceName;
-            //    o.Configuration = redisConnection.Configuration;
-            //});
+            var redisConnection = redisConnectionSection.Get<RedisConnectionSettings>();
+            services.AddStackExchangeRedisCache(o =>
+            {
+                o.InstanceName = redisConnection.InstanceName;
+                o.Configuration = redisConnection.Configuration;
+            });
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

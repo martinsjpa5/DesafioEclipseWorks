@@ -16,6 +16,8 @@ namespace Infra.EF.Configurations
             builder.Property(x => x.Alteracoes);
 
             builder.HasOne(x => x.Tarefa).WithMany(y => y.HistoricosAlteracoes).HasForeignKey(y => y.TarefaId);
+
+            builder.ToTable("HistoricoAlteracaoTarefa");
         }
     }
 }

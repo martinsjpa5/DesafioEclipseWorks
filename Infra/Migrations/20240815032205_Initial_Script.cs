@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class _001_Adicionando_Entidades : Migration
+    public partial class Initial_Script : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +32,9 @@ namespace Infra.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Detalhes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataVencimento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Prioridade = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     ProjetoId = table.Column<int>(type: "int", nullable: false),
@@ -51,13 +53,35 @@ namespace Infra.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comentarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TarefaId = table.Column<int>(type: "int", nullable: false),
+                    CriadoEm = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AtualizadoEm = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comentarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comentarios_Tarefas_TarefaId",
+                        column: x => x.TarefaId,
+                        principalTable: "Tarefas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HistoricoAlteracaoTarefa",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Alteracoes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CriadoPor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CriadoPor = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TarefaId = table.Column<int>(type: "int", nullable: false),
                     CriadoEm = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AtualizadoEm = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -74,6 +98,11 @@ namespace Infra.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comentarios_TarefaId",
+                table: "Comentarios",
+                column: "TarefaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HistoricoAlteracaoTarefa_TarefaId",
                 table: "HistoricoAlteracaoTarefa",
                 column: "TarefaId");
@@ -87,6 +116,9 @@ namespace Infra.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Comentarios");
+
             migrationBuilder.DropTable(
                 name: "HistoricoAlteracaoTarefa");
 

@@ -4,11 +4,27 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sqlserver
+    hostname: "sqlserver"
     environment:
-      SA_PASSWORD: "Cefet123!"
+      SA_PASSWORD: "Desafio123!"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: "rabbitmq"
+    ports:
+      - "5672:5672"  
+      - "15672:15672" 
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    hostname: "redis"
+    ports:
+      - "6379:6379"  
 
   webapi:
     build:
@@ -20,3 +36,17 @@ services:
       - "8081:8081"
     depends_on:
       - sqlserver
+      - rabbitmq
+      - redis
+
+  relatoriojob:
+    build:
+      context: .
+      dockerfile: Jobs/Relatorio/Dockerfile
+    container_name: relatoriojob
+    restart: on-failure
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - redis
+      - webapi

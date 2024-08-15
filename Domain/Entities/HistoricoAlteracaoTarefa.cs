@@ -6,7 +6,7 @@ namespace Domain.Entities
     {
 
         public string Alteracoes { get; set; }
-        public string CriadoPor { get; set; }
+        public Guid CriadoPor { get; set; }
 
         public Tarefa Tarefa { get; set; }
         public int TarefaId { get; set; }

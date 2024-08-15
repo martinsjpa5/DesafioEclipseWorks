@@ -12,10 +12,12 @@ namespace Infra.EF.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.AtualizadoEm);
             builder.Property(x => x.CriadoEm);
-            builder.Property(x => x.Detalhes);
+            builder.Property(x => x.Titulo);
+            builder.Property(x => x.Descricao);
+            builder.Property(x => x.DataVencimento);
             builder.Property(x => x.Status);
-            
 
+            builder.HasMany(x => x.Comentarios).WithOne(y => y.Tarefa).HasForeignKey(y => y.TarefaId);
 
         }
     }

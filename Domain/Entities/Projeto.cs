@@ -8,6 +8,14 @@ namespace Domain.Entities
         public string Nome { get; set; }
         public ICollection<Tarefa> Tarefas { get; set; }
 
+
+        public CommonResponse Editar(string nome)
+        {
+            Nome = nome;
+            AtualizadoEm = DateTime.Now;
+
+            return CommonResponse.SucessoBuilder();
+        }
         public CommonResponse AdicionarTarefa(Tarefa tarefa)
         {
             CommonResponse response = CommonResponse.SucessoBuilder();
@@ -20,12 +28,19 @@ namespace Domain.Entities
             return response;
         }
 
+        public CommonResponse PodeDeletar()
+        {
+            var existeTarefasPendentes = Tarefas.Any(tarefa => tarefa.Status != Enum.EStatusTarefa.CONCLUIDA);
+
+            if (existeTarefasPendentes)
+                return CommonResponse.ErroBuilder("Esse Projeto não pode ser deletado pois existem tarefas pendentes");
+
+            return CommonResponse.SucessoBuilder();
+        }
+
         public override CommonResponse EhValida()
         {
             CommonResponse response = CommonResponse.SucessoBuilder();
-
-            if (Nome.Contains("BR"))
-                response.AdicionarErro("No final do nome do projeto deve haver a sigla BR");
 
             return response;
         }
