@@ -24,7 +24,7 @@ namespace Infra.Dapper.Repositories
                      Tarefas as t on t.Id = h.TarefaId
                  WHERE 
                      h.CriadoEm >= DATEADD(DAY, -30, GETDATE())
-                     AND JSON_VALUE(h.Alteracoes, '$.Status') = '2'
+                     AND JSON_VALUE(h.Alteracoes, '$.Tarefa.Status') = '2'
                      AND h.CriadoPor = @CriadoPor
                      AND t.Status = 2
                  GROUP BY 
