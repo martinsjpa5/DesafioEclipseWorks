@@ -18,7 +18,7 @@ Fase 2 Refinamento:
 3. Sobre o relatório você acredita que ele será uma operação que será acessada por muitos usuarios e ela será uma consulta custosa? Estou perguntando isso pois talvez não tenho certeza se há necessidade de adicionar um processo assincrono utilizando filas para melhorar o desempenho/escalabilidade e consequentemente adicionar a complexidade que vem junto com essas tecnologias.
 
 Fase 3 Final:
-1. Caso seja uma aplicação de grande porte utilizado por muitos usuarios simultaneamente na visão de Cloud eu adicionaria no EKS para fazer a orquestração dos containers e sua escabilidade de forma mais fácil
+1. Caso seja uma aplicação de grande porte utilizado por muitos usuarios simultaneamente na visão de Cloud eu adicionaria no EKS para fazer a orquestração dos containers e sua escabilidade de forma mais fácil e para poder administrar esses pods eu utilizaria a Tecnologia argoCD ou Rancher
 2. Caso não seja uma aplicação que precise tanto de escalabilidade eu manteria em um EC2 rodando esse docker-compose e definiria a memoria para cada container.
 3. Desenvolveria um pipeline CI/CD para branch master e develop, toda vez que viesse um commit para essas branchs iniciaria um pipeline que rodaria os testes para ver se todos passaram, rodaria o sonar para ver se não tem codesmells e ter uma quantidade mínima de coverage, e enviaria um sinal para o ec2 fazer todo o processo de build e deploy do docker-compose.
 4. Em caso de Subida com problema eu deixaria salvo a ultima imagem do docker-compose criada antes da ultima atualização para poder dar rollback.
